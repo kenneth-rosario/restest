@@ -506,7 +506,7 @@ class Parser(object):
         p[0] = p[1]
 
     def p_error(self, p):
-        raise SyntaxError(f"Invalid syntax at line {p.lexer.lineno}: {p.value}")
+        raise SyntaxError(f"Invalid syntax ")
     def build_parser(self):
         parser = yacc.yacc(tabmodule="restest_parser", module=self)
         return parser

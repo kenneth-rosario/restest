@@ -1,7 +1,5 @@
 import sys
 from core.reader import Reader
-from tests.verify_test import verify_test
-
 
 def main():
     reader = Reader()

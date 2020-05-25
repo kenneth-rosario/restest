@@ -14,15 +14,25 @@ class BaseCrud(object):
             "delete": self.delete,
         }
 
+    def _fix_body(self, body):
+        if type(body) == dict:
+            for key in body.keys():
+                if type(body[key]) == str:
+                    body[key] = body[key].strip("\"")
+
     def _construct_url(self, url=None, **kwargs):
         new_url = self.base_url if not url else url
         for key in kwargs.keys():
-            new_url = new_url.replace("{" + key + "}", f"{kwargs[key]}")
+            if type(kwargs[key]) == str:
+                new_url = new_url.replace("{" + key + "}", kwargs[key].strip("\"") )
+            else:
+                new_url = new_url.replace("{" + key + "}", f"{kwargs[key]}")
         return new_url
 
     def get(self, body=None,url=None, **kwargs):
         new_url = self._construct_url(url=url, **kwargs)
         if body:
+            self._fix_body(body)
             return Response(
                 requests.get(new_url, json=body, headers=self.header)
             )
@@ -32,6 +42,7 @@ class BaseCrud(object):
     def put(self, body=None,url=None, **kwargs):
         new_url = self._construct_url(url=url, **kwargs)
         if body:
+            self._fix_body(body)
             return Response(
                 requests.put(new_url, json=body, headers=self.header)
             )
@@ -42,6 +53,7 @@ class BaseCrud(object):
         new_url = self._construct_url(url=url, **kwargs)
 
         if body:
+            self._fix_body(body)
             return Response(
                 requests.post(new_url, json=body, headers=self.header)
             )
@@ -51,6 +63,7 @@ class BaseCrud(object):
     def delete(self, body=None,url=None, **kwargs):
         new_url = self._construct_url(url=url,**kwargs)
         if body:
+            self._fix_body(body)
             return Response(
                 requests.delete(new_url, json=body, headers=self.header)
             )
